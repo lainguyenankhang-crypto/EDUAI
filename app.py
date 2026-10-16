@@ -308,10 +308,15 @@ if page == PAGES[0]:
             <p>Phân tích câu hỏi, tìm gợi ý và xây dựng cách hiểu của riêng bạn.</p>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("Khám phá gia sư →", key="go_tutor",
-                     use_container_width=True):
-            st.session_state.eduai_navigation = PAGES[1]
-            st.rerun()
+      if st.button(
+    "Khám phá gia sư →",
+    key="go_tutor",
+    use_container_width=True,
+    on_click=lambda: st.session_state.update(
+        eduai_navigation=PAGES[1]
+    ),
+):
+    pass
 
     with c2:
         st.markdown("""
@@ -321,10 +326,15 @@ if page == PAGES[0]:
             <p>Thử thách bản thân bằng câu hỏi và xem lại những gì cần ôn.</p>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("Bắt đầu kiểm tra →", key="go_quiz",
-                     use_container_width=True):
-            st.session_state.eduai_navigation = PAGES[2]
-            st.rerun()
+        if st.button(
+    "Bắt đầu kiểm tra →",
+    key="go_quiz",
+    use_container_width=True,
+    on_click=lambda: st.session_state.update(
+        eduai_navigation=PAGES[2]
+    ),
+):
+    pass
 
     with c3:
         st.markdown("""
@@ -334,10 +344,15 @@ if page == PAGES[0]:
             <p>Quan sát hoạt động và kết quả học tập trong phiên hiện tại.</p>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("Xem tiến độ →", key="go_progress",
-                     use_container_width=True):
-            st.session_state.eduai_navigation = PAGES[3]
-            st.rerun()
+       if st.button(
+    "Xem tiến độ →",
+    key="go_progress",
+    use_container_width=True,
+    on_click=lambda: st.session_state.update(
+        eduai_navigation=PAGES[3]
+    ),
+):
+    pass
 
     st.markdown("## 📡 Learning analytics")
     m1, m2, m3 = st.columns(3)
