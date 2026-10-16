@@ -309,11 +309,11 @@ if page == PAGES[0]:
         </div>
         """, unsafe_allow_html=True)
       if st.button(
-    "Khám phá gia sư →",
-    key="go_tutor",
-    use_container_width=True,
-    on_click=lambda: st.session_state.update(
-        eduai_navigation=PAGES[1]
+            "Khám phá gia sư →",
+            key="go_tutor",
+            use_container_width=True,
+            on_click=lambda: st.session_state.update(
+            eduai_navigation=PAGES[1]
     ),
 ):
     pass
@@ -327,11 +327,11 @@ if page == PAGES[0]:
         </div>
         """, unsafe_allow_html=True)
         if st.button(
-    "Bắt đầu kiểm tra →",
-    key="go_quiz",
-    use_container_width=True,
-    on_click=lambda: st.session_state.update(
-        eduai_navigation=PAGES[2]
+            "Bắt đầu kiểm tra →",
+            key="go_quiz",
+            use_container_width=True,
+            on_click=lambda: st.session_state.update(
+            eduai_navigation=PAGES[2]
     ),
 ):
     pass
@@ -345,11 +345,11 @@ if page == PAGES[0]:
         </div>
         """, unsafe_allow_html=True)
        if st.button(
-    "Xem tiến độ →",
-    key="go_progress",
-    use_container_width=True,
-    on_click=lambda: st.session_state.update(
-        eduai_navigation=PAGES[3]
+            "Xem tiến độ →",
+            key="go_progress",
+            use_container_width=True,
+            on_click=lambda: st.session_state.update(
+            eduai_navigation=PAGES[3]
     ),
 ):
     pass
