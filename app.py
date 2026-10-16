@@ -300,7 +300,7 @@ if page == PAGES[0]:
 
     c1, c2, c3 = st.columns(3, gap="medium")
 
-       with c1:
+    with c1:
         st.markdown("""
         <div class="feature">
             <div class="feature-icon">✳</div>
