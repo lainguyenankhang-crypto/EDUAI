@@ -313,7 +313,7 @@ if page == PAGES[0]:
             key="go_tutor",
             use_container_width=True,
             on_click=lambda: st.session_state.update(
-            eduai_navigation=PAGES[1]
+                eduai_navigation=PAGES[1]
     ),
 ):
     pass
@@ -331,7 +331,7 @@ if page == PAGES[0]:
             key="go_quiz",
             use_container_width=True,
             on_click=lambda: st.session_state.update(
-            eduai_navigation=PAGES[2]
+                eduai_navigation=PAGES[2]
     ),
 ):
     pass
@@ -349,7 +349,7 @@ if page == PAGES[0]:
             key="go_progress",
             use_container_width=True,
             on_click=lambda: st.session_state.update(
-            eduai_navigation=PAGES[3]
+                eduai_navigation=PAGES[3]
     ),
 ):
     pass
