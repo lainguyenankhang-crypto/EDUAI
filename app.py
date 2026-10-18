@@ -391,8 +391,8 @@ st.info(
         "Các chỉ số chỉ phản ánh dữ liệu trong phiên hiện tại."
 )
 
-    st.markdown("## 🧭 Lộ trình phát triển")
-    with st.container(border=True):
+st.markdown("## 🧭 Lộ trình phát triển")
+with st.container(border=True):
         st.markdown("**01 — Learning interface**")
         st.caption("Giao diện và luồng học tập cơ bản.")
 
