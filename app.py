@@ -383,91 +383,203 @@ if page == PAGES[0]:
 
         st.markdown("**04 — Progress tracking**")
         st.caption("Thiết kế cơ chế lưu kết quả lâu dài.")
-
 # =====================================================
-# PAGE 2: TUTOR
+# PAGE 2: TUTOR - FREE DEMO CHATBOT
 # =====================================================
 elif page == PAGES[1]:
+    import re
+
     st.markdown("# ✳ Gia sư học tập")
-    st.write("Đặt câu hỏi. Chia nhỏ vấn đề. Tìm cách hiểu rõ hơn.")
+    st.write(
+        "Chatbot học tập miễn phí phiên bản thử nghiệm. "
+        "Hãy chọn môn học và nhập câu hỏi."
+    )
 
-    with st.container(border=True):
-        subject = st.selectbox(
-            "Môn học",
-            ["Hóa học 12", "Toán học", "Sinh học", "Ngữ văn", "Tiếng Anh"],
+    subject = st.selectbox(
+        "Môn học",
+        [
+            "Hóa học 12",
+            "Toán học",
+            "Sinh học",
+            "Ngữ văn",
+            "Tiếng Anh",
+        ],
+        key="tutor_subject",
+    )
+
+    help_style = st.radio(
+        "Cách hỗ trợ",
+        [
+            "Gợi ý trước",
+            "Giải thích từng bước",
+            "Ví dụ tương tự",
+        ],
+        horizontal=True,
+        key="tutor_help_style",
+    )
+
+    if "tutor_messages" not in st.session_state:
+        st.session_state.tutor_messages = [
+            {
+                "role": "assistant",
+                "content": (
+                    "Xin chào! Mình là gia sư demo của EDUAI. "
+                    "Bạn có thể hỏi về công thức, khái niệm "
+                    "hoặc kiến thức học tập phổ biến."
+                ),
+            }
+        ]
+
+    if st.button("Xóa cuộc trò chuyện", key="clear_tutor"):
+        st.session_state.tutor_messages = []
+        st.rerun()
+
+    for message in st.session_state.tutor_messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+    question = st.chat_input(
+        "Nhập câu hỏi học tập..."
+    )
+
+    if question:
+        st.session_state.tutor_messages.append(
+            {"role": "user", "content": question}
         )
 
-        question = st.text_area(
-            "Câu hỏi của bạn",
-            placeholder="Ví dụ: Vì sao glucose phản ứng với thuốc thử Tollens?",
-            height=125,
-        )
+        q = question.lower().strip()
+        answer = ""
 
-        help_style = st.radio(
-            "Chế độ hỗ trợ",
-            ["Gợi ý trước", "Giải thích từng bước", "Ví dụ tương tự"],
-            horizontal=True,
-        )
-
-        if st.button("✦ Phân tích câu hỏi", type="primary",
-                     use_container_width=True):
-            if not question.strip():
-                st.warning("Bạn hãy nhập câu hỏi trước nhé.")
+        if subject == "Hóa học 12":
+            if any(
+                word in q
+                for word in ["glucose", "glucozơ", "fructose", "fructozơ"]
+            ):
+                answer = (
+                    "**Gợi ý Hóa học:** Glucose và fructose "
+                    "là các monosaccharide.\n\n"
+                    "Khi học phần này, hãy phân biệt cấu tạo "
+                    "mạch hở, mạch vòng và các phản ứng đặc trưng. "
+                    "Bạn hãy gửi phương trình hoặc bài tập cụ thể "
+                    "để mình hỗ trợ theo từng bước."
+                )
+            elif any(
+                word in q
+                for word in ["este", "ester"]
+            ):
+                answer = (
+                    "**Gợi ý:** Este thường có nhóm chức "
+                    "–COO– trong phân tử.\n\n"
+                    "Hãy xác định công thức cấu tạo, gọi tên "
+                    "và xem đề bài yêu cầu tính chất hay tính toán."
+                )
             else:
-                q = question.lower()
+                answer = (
+                    "Mình chưa có câu trả lời được lập trình "
+                    "cho câu hỏi này. Bạn hãy nêu rõ khái niệm, "
+                    "phương trình hoặc dữ kiện bài tập nhé."
+                )
 
-                if subject == "Hóa học 12" and (
-                    "tollens" in q or "tráng bạc" in q or "glucose" in q
-                ):
-                    answer = (
-                        "**Gợi ý kiến thức**\n\n"
-                        "Glucose ở dạng mạch hở có nhóm aldehyde (–CHO), "
-                        "liên quan đến phản ứng tráng bạc. Trong dung dịch, "
-                        "glucose tồn tại cân bằng giữa dạng mạch vòng "
-                        "và một lượng nhỏ dạng mạch hở.\n\n"
-                        "**Thử thách tư duy**\n\n"
-                        "Hãy xác định nhóm chức liên quan và viết phương "
-                        "trình theo quy ước trong sách giáo khoa."
-                    )
-                elif help_style == "Gợi ý trước":
-                    answer = (
-                        "**Bước 1:** Xác định khái niệm liên quan.\n\n"
-                        "**Bước 2:** Tách dữ kiện và yêu cầu.\n\n"
-                        "**Bước 3:** Thử giải thích bằng kiến thức của bạn.\n\n"
-                        "Đây là gợi ý chung từ bản mẫu, chưa phải AI thật."
-                    )
-                elif help_style == "Ví dụ tương tự":
-                    answer = (
-                        "Hãy thử tạo một bài cùng dạng với dữ kiện khác. "
-                        "Giải từng bước, sau đó so sánh cách làm và kiểm "
-                        "tra xem quy tắc nào được áp dụng."
-                    )
-                else:
-                    answer = (
-                        "1. Xác định chủ đề.\n\n"
-                        "2. Ghi dữ kiện đã biết.\n\n"
-                        "3. Chọn quy tắc hoặc phương pháp.\n\n"
-                        "4. Thực hiện từng bước.\n\n"
-                        "5. Kiểm tra kết quả và đơn vị nếu có.\n\n"
-                        "Đây là phản hồi minh họa, chưa phải AI thật."
-                    )
+        elif subject == "Toán học":
+            if any(
+                word in q
+                for word in ["đạo hàm", "dao ham"]
+            ):
+                answer = (
+                    "**Gợi ý:** Hãy xác định hàm số trước, "
+                    "sau đó chọn quy tắc đạo hàm phù hợp. "
+                    "Bạn gửi biểu thức cụ thể để được hướng dẫn."
+                )
+            elif any(
+                word in q
+                for word in ["xác suất", "xac suat"]
+            ):
+                answer = (
+                    "**Gợi ý:** Xác định không gian mẫu, "
+                    "biến cố và dữ kiện đề bài trước khi "
+                    "áp dụng công thức xác suất."
+                )
+            else:
+                answer = (
+                    "Bạn hãy gửi biểu thức hoặc đề toán cụ thể. "
+                    "Phiên bản demo chưa tự giải được mọi bài toán."
+                )
 
-                st.session_state.history.append({
+        elif subject == "Sinh học":
+            if any(
+                word in q
+                for word in ["dna", "adn", "nhân đôi"]
+            ):
+                answer = (
+                    "**Gợi ý Sinh học:** Với bài tập nhân đôi DNA, "
+                    "hãy xác định số lần nhân đôi và số phân tử "
+                    "DNA ban đầu, rồi áp dụng quy luật nhân đôi."
+                )
+            else:
+                answer = (
+                    "Bạn hãy nêu tên bài hoặc khái niệm Sinh học "
+                    "cần học. Mình sẽ đưa gợi ý cơ bản nếu "
+                    "câu hỏi thuộc nội dung đã lập trình."
+                )
+
+        elif subject == "Ngữ văn":
+            if any(
+                word in q
+                for word in ["nghị luận", "nghi luan"]
+            ):
+                answer = (
+                    "**Gợi ý Ngữ văn:** Xác định luận điểm, "
+                    "lí lẽ, dẫn chứng và cách liên kết các ý. "
+                    "Sau đó kiểm tra xem mỗi dẫn chứng có "
+                    "thực sự làm rõ luận điểm hay không."
+                )
+            else:
+                answer = (
+                    "Bạn hãy cho biết tên tác phẩm hoặc yêu cầu "
+                    "cụ thể, chẳng hạn phân tích hình ảnh, "
+                    "nội dung hay nghệ thuật."
+                )
+
+        else:
+            if any(
+                word in q
+                for word in ["present perfect", "hiện tại hoàn thành"]
+            ):
+                answer = (
+                    "**English tip:** The present perfect uses "
+                    "**have/has + past participle**.\n\n"
+                    "Example: I have finished my homework."
+                )
+            else:
+                answer = (
+                    "Please tell me the English topic you are "
+                    "studying, such as grammar, vocabulary, "
+                    "or writing. This demo has limited answers."
+                )
+
+        if help_style == "Gợi ý trước":
+            answer = "💡 **Gợi ý trước**\n\n" + answer
+        elif help_style == "Ví dụ tương tự":
+            answer += (
+                "\n\n**Cách luyện tập:** Hãy thử một câu hỏi "
+                "tương tự với dữ kiện khác để kiểm tra "
+                "bạn đã hiểu kiến thức chưa."
+            )
+
+        st.session_state.tutor_messages.append(
+            {"role": "assistant", "content": answer}
+        )
+
+        if "history" in st.session_state:
+            st.session_state.history.append(
+                {
                     "subject": subject,
                     "question": question,
                     "answer": answer,
-                })
+                }
+            )
 
-                st.markdown("### 🧠 Kết quả hỗ trợ")
-                st.markdown(answer)
-
-    if st.session_state.history:
-        st.markdown("## Lịch sử học tập")
-        for item in reversed(st.session_state.history[-5:]):
-            with st.expander(
-                f"{item['subject']} · {item['question'][:65]}"
-            ):
-                st.markdown(item["answer"])
+        st.rerun()
 
 # =====================================================
 # PAGE 3: QUIZ
