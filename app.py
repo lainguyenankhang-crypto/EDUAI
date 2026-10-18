@@ -1,4 +1,3 @@
-
 import streamlit as st
 
 # =====================================================
@@ -24,9 +23,9 @@ for key, value in defaults.items():
     if key not in st.session_state:
         st.session_state[key] = value
 
+# ------------------ VISUAL DESIGN --------------------
 st.markdown("""
 <style>
-
 @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap');
 
 :root {
@@ -251,6 +250,7 @@ p, label, .stMarkdown {
     }
 }
 </style>
+""", unsafe_allow_html=True)
 
 # ------------------ NAVIGATION -----------------------
 PAGES = [
@@ -782,4 +782,3 @@ st.markdown(
     'SCI-TECH YOUTH EDITION</div>',
     unsafe_allow_html=True,
 )
-
