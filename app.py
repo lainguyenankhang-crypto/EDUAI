@@ -383,69 +383,92 @@ if page == PAGES[0]:
 
         st.markdown("**04 — Progress tracking**")
         st.caption("Thiết kế cơ chế lưu kết quả lâu dài.")
+
 # =====================================================
 # PAGE 2: AI TUTOR - HUGGING FACE
 # =====================================================
 elif page == PAGES[1]:
-    import streamlit as st
     from huggingface_hub import InferenceClient
 
     st.markdown("# ✳ Gia sư học tập")
-    st.write(
-        "Đặt câu hỏi để được AI hỗ trợ học tập "
-        "theo từng bước."
+    st.markdown(
+        "Hỏi bài, nhận gợi ý và tìm hiểu kiến thức "
+        "cùng gia sư AI của EDUAI."
     )
 
-    subject = st.selectbox(
-        "Môn học",
-        [
-            "Hóa học 12",
-            "Toán học",
-            "Sinh học",
-            "Ngữ văn",
-            "Tiếng Anh",
-        ],
-        key="tutor_subject",
-    )
-
-    help_style = st.radio(
-        "Cách hỗ trợ",
-        [
-            "Gợi ý trước",
-            "Giải thích từng bước",
-            "Ví dụ tương tự",
-        ],
-        horizontal=True,
-        key="tutor_help_style",
-    )
-
+    # Khởi tạo lịch sử trò chuyện
     if "tutor_messages" not in st.session_state:
         st.session_state.tutor_messages = [
             {
                 "role": "assistant",
                 "content": (
-                    "Xin chào! Mình là gia sư AI của EDUAI. "
-                    "Bạn đang cần hỗ trợ nội dung gì?"
+                    "Xin chào! 👋 Mình là gia sư AI của EDUAI. "
+                    "Bạn đang muốn học môn nào? Hãy nhập câu hỏi "
+                    "vào khung chat bên dưới nhé."
                 ),
             }
         ]
 
-    # Nút xóa lịch sử chat trong phiên hiện tại
-    if st.button("Xóa cuộc trò chuyện", key="clear_tutor"):
-        st.session_state.tutor_messages = []
+    # Tùy chọn học tập
+    col1, col2 = st.columns([1, 2])
+
+    with col1:
+        subject = st.selectbox(
+            "📚 Môn học",
+            [
+                "Hóa học 12",
+                "Toán học",
+                "Sinh học",
+                "Ngữ văn",
+                "Tiếng Anh",
+            ],
+            key="tutor_subject",
+        )
+
+    with col2:
+        help_style = st.selectbox(
+            "🧠 Cách hỗ trợ",
+            [
+                "Gợi ý trước",
+                "Giải thích từng bước",
+                "Ví dụ tương tự",
+            ],
+            key="tutor_help_style",
+        )
+
+    # Nút xóa cuộc trò chuyện
+    if st.button(
+        "🗑️ Xóa cuộc trò chuyện",
+        key="clear_tutor",
+    ):
+        st.session_state.tutor_messages = [
+            {
+                "role": "assistant",
+                "content": (
+                    "Cuộc trò chuyện đã được làm mới. "
+                    "Bạn có thể bắt đầu hỏi bài!"
+                ),
+            }
+        ]
         st.rerun()
 
-    # Hiển thị các tin nhắn đã có
+    st.divider()
+
+    # Khu vực hiển thị lịch sử chat
+    st.markdown("### 💬 Cuộc trò chuyện")
+
     for message in st.session_state.tutor_messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-    # Khung nhập câu hỏi
+    # Khung nhập luôn nằm sau lịch sử hội thoại
     question = st.chat_input(
-        "Nhập câu hỏi học tập của bạn..."
+        "Nhập câu hỏi của bạn tại đây...",
+        key="tutor_chat_input",
     )
 
     if question:
+        # Hiển thị ngay câu hỏi người dùng
         st.session_state.tutor_messages.append(
             {"role": "user", "content": question}
         )
@@ -461,30 +484,29 @@ elif page == PAGES[1]:
                 api_key=token,
             )
 
-            messages = [
-                {
-                    "role": "system",
-                    "content": f"""
-Bạn là gia sư AI của website EDUAI.
-Hỗ trợ học sinh THPT bằng tiếng Việt rõ ràng,
-chính xác và có cấu trúc.
+            instructions = f"""
+Bạn là gia sư AI của EDUAI, hỗ trợ học sinh THPT
+bằng tiếng Việt rõ ràng, chính xác và dễ hiểu.
 
 Môn học: {subject}
 Cách hỗ trợ: {help_style}
 
-Nếu học sinh chọn "Gợi ý trước", hãy đưa gợi ý
-trước, không vội đưa toàn bộ lời giải.
-Nếu chọn "Giải thích từng bước", hãy giải thích
-lập luận, công thức và các bước thực hiện.
-Nếu chọn "Ví dụ tương tự", hãy giải thích kiến thức
-rồi đưa một ví dụ phù hợp.
+Nếu chọn Gợi ý trước, hãy đưa gợi ý trước khi giải.
+Nếu chọn Giải thích từng bước, hãy trình bày từng bước
+và giải thích lý do.
+Nếu chọn Ví dụ tương tự, hãy đưa thêm ví dụ phù hợp.
 
-Không bịa dữ kiện hoặc khẳng định điều chưa chắc chắn.
+Không tự bịa dữ kiện. Nếu chưa chắc chắn, hãy nói rõ.
 """
+
+            messages = [
+                {
+                    "role": "system",
+                    "content": instructions,
                 }
             ]
 
-            # Chỉ gửi một số tin nhắn gần nhất
+            # Chỉ gửi 10 tin nhắn gần nhất để giữ ngữ cảnh
             messages.extend(
                 {
                     "role": item["role"],
@@ -494,7 +516,7 @@ Không bịa dữ kiện hoặc khẳng định điều chưa chắc chắn.
             )
 
             with st.chat_message("assistant"):
-                with st.spinner("Gia sư AI đang trả lời..."):
+                with st.spinner("Gia sư AI đang suy nghĩ..."):
                     result = client.chat.completions.create(
                         model="deepseek-ai/DeepSeek-V4.1-Flash",
                         messages=messages,
@@ -503,8 +525,12 @@ Không bịa dữ kiện hoặc khẳng định điều chưa chắc chắn.
                     )
 
                     answer = result.choices[0].message.content
+
                     if not answer:
-                        answer = "AI chưa trả về nội dung. Bạn hãy thử lại."
+                        answer = (
+                            "Mô hình chưa trả về câu trả lời. "
+                            "Bạn hãy thử hỏi lại nhé."
+                        )
 
                     st.markdown(answer)
 
@@ -515,7 +541,7 @@ Không bịa dữ kiện hoặc khẳng định điều chưa chắc chắn.
                 }
             )
 
-            # Ghi vào lịch sử hiện có nếu ứng dụng đã khởi tạo
+            # Cập nhật lịch sử học tập nếu app đã khởi tạo
             if "history" in st.session_state:
                 st.session_state.history.append(
                     {
@@ -526,17 +552,10 @@ Không bịa dữ kiện hoặc khẳng định điều chưa chắc chắn.
                 )
 
         except Exception as e:
-            # Bỏ câu hỏi khỏi lịch sử nếu gọi API thất bại
-            if (
-                st.session_state.tutor_messages
-                and st.session_state.tutor_messages[-1]["role"] == "user"
-            ):
-                st.session_state.tutor_messages.pop()
-
             st.error(
-                "Chưa kết nối được với mô hình AI. "
-                "Hãy kiểm tra HF_TOKEN, quyền truy cập, "
-                "tên mô hình và hạn mức sử dụng."
+                "Chưa thể kết nối với gia sư AI. "
+                "Hãy kiểm tra HF_TOKEN, quyền truy cập mô hình, "
+                "nhà cung cấp và hạn mức miễn phí."
             )
             st.caption(f"Loại lỗi: {type(e).__name__}")
 
