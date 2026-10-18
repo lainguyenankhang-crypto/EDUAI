@@ -267,18 +267,16 @@ with st.sidebar:
     st.caption("LEARN BEYOND LIMITS")
     st.divider()
 
-    page = st.radio(
-        "KHÔNG GIAN HỌC TẬP",
-        PAGES,
-        label_visibility="visible",
-        key="eduai_navigation",
-    )
+  page = st.radio(
+    "Điều hướng",
+    PAGES,
+    key="eduai_navigation",
+    label_visibility="collapsed",
+)
 
-    st.divider()
-    st.markdown("**SCI-TECH EDITION**")
-    st.caption("Phiên bản giao diện thử nghiệm")
-    st.caption("🔵 Learn · 🟣 Explore · 🧬 Evolve")
-
+if st.button("⌂ Về trang chủ", use_container_width=True):
+    st.session_state["eduai_navigation"] = PAGES[0]
+    st.rerun()
 # =====================================================
 # PAGE 1: DASHBOARD
 # =====================================================
