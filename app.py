@@ -409,6 +409,10 @@ with st.container(border=True):
 # PAGE 2: AI TUTOR - HUGGING FACE
 # =====================================================
 
+# =====================================================
+# PAGE 2: AI TUTOR - HUGGING FACE
+# =====================================================
+
 elif page == PAGES[1]:
     from groq import Groq
 
@@ -669,7 +673,7 @@ elif page == PAGES[2]:
     if submitted:
         unanswered = sum(answer is None for answer in answers)
 
-if unanswered:
+        if unanswered:
             st.warning(f"Còn {unanswered} câu chưa trả lời.")
         else:
             score = sum(
