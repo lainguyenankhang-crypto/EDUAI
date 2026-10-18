@@ -376,7 +376,7 @@ if page == PAGES[0]:
         )
 
 st.markdown("## 📡 Learning analytics")
-    m1, m2, m3 = st.columns(3)
+m1, m2, m3 = st.columns(3)
 
     m1.metric("Câu hỏi đã gửi", len(st.session_state.history))
     m2.metric(
