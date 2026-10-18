@@ -24,7 +24,7 @@ for key, value in defaults.items():
     if key not in st.session_state:
         st.session_state[key] = value
 
-
+st.markdown("""
 <style>
 
 /* 1. Bảng màu và nền ứng dụng */
