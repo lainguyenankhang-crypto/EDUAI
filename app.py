@@ -267,7 +267,7 @@ with st.sidebar:
     st.caption("LEARN BEYOND LIMITS")
     st.divider()
 
-  page = st.radio(
+page = st.radio(
     "Điều hướng",
     PAGES,
     key="eduai_navigation",
