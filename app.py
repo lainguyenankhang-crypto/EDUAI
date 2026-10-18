@@ -551,13 +551,11 @@ Không tự bịa dữ kiện. Nếu chưa chắc chắn, hãy nói rõ.
                     }
                 )
 
-        except Exception as e:
-            st.error(
-                "Chưa thể kết nối với gia sư AI. "
-                "Hãy kiểm tra HF_TOKEN, quyền truy cập mô hình, "
-                "nhà cung cấp và hạn mức miễn phí."
-            )
-            st.caption(f"Loại lỗi: {type(e).__name__}")
+      except Exception as e:
+    st.error("Không thể kết nối với mô hình AI.")
+
+    st.write("Loại lỗi:", type(e).__name__)
+    st.code(str(e)[:1500])
 
 # =====================================================
 # PAGE 3: QUIZ
