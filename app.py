@@ -417,7 +417,7 @@ elif page == PAGES[1]:
         subject = st.selectbox(
             "📚 Môn học",
             [
-                "Hóa học 12",
+                "Hóa học ",
                 "Toán học",
                 "Sinh học",
                 "Ngữ văn",
