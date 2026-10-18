@@ -387,8 +387,9 @@ if page == PAGES[0]:
 # =====================================================
 # PAGE 2: AI TUTOR - HUGGING FACE
 # =====================================================
+
 elif page == PAGES[1]:
-    from huggingface_hub import InferenceClient
+    from groq import Groq
 
     st.markdown("# ✳ Gia sư học tập")
     st.markdown(
@@ -454,21 +455,21 @@ elif page == PAGES[1]:
 
     st.divider()
 
-    # Khu vực hiển thị lịch sử chat
+    # Hiển thị lịch sử chat
     st.markdown("### 💬 Cuộc trò chuyện")
 
     for message in st.session_state.tutor_messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-    # Khung nhập luôn nằm sau lịch sử hội thoại
+    # Khung nhập câu hỏi
     question = st.chat_input(
         "Nhập câu hỏi của bạn tại đây...",
         key="tutor_chat_input",
     )
 
     if question:
-        # Hiển thị ngay câu hỏi người dùng
+        # Lưu và hiển thị câu hỏi
         st.session_state.tutor_messages.append(
             {"role": "user", "content": question}
         )
@@ -477,12 +478,9 @@ elif page == PAGES[1]:
             st.markdown(question)
 
         try:
-            token = st.secrets["HF_TOKEN"]
-
-            client = InferenceClient(
-                provider="fireworks-ai",
-                api_key=token,
-            )
+            # Kết nối Groq API
+            token = st.secrets["GROQ_API_KEY"]
+            client = Groq(api_key=token)
 
             instructions = f"""
 Bạn là gia sư AI của EDUAI, hỗ trợ học sinh THPT
@@ -494,7 +492,8 @@ Cách hỗ trợ: {help_style}
 Nếu chọn Gợi ý trước, hãy đưa gợi ý trước khi giải.
 Nếu chọn Giải thích từng bước, hãy trình bày từng bước
 và giải thích lý do.
-Nếu chọn Ví dụ tương tự, hãy đưa thêm ví dụ phù hợp.
+Nếu chọn Ví dụ tương tự, hãy giải thích kiến thức
+rồi đưa một ví dụ phù hợp.
 
 Không tự bịa dữ kiện. Nếu chưa chắc chắn, hãy nói rõ.
 """
@@ -506,25 +505,40 @@ Không tự bịa dữ kiện. Nếu chưa chắc chắn, hãy nói rõ.
                 }
             ]
 
-            # Chỉ gửi 10 tin nhắn gần nhất để giữ ngữ cảnh
+            # Lấy các tin nhắn gần nhất làm ngữ cảnh
+            # Loại bỏ câu hỏi hiện tại khỏi danh sách này
+            # để tránh gửi câu hỏi hai lần
+            previous_messages = (
+                st.session_state.tutor_messages[:-1]
+            )
+
             messages.extend(
                 {
                     "role": item["role"],
                     "content": item["content"],
                 }
-                for item in st.session_state.tutor_messages[-10:]
+                for item in previous_messages[-10:]
+            )
+
+            # Thêm câu hỏi hiện tại đúng một lần
+            messages.append(
+                {
+                    "role": "user",
+                    "content": question,
+                }
             )
 
             with st.chat_message("assistant"):
                 with st.spinner("Gia sư AI đang suy nghĩ..."):
                     result = client.chat.completions.create(
-                        model="deepseek-ai/DeepSeek-V4.1-Flash",
+                        model="openai/gpt-oss-120b",
                         messages=messages,
-                        max_tokens=700,
-                        temperature=0.4,
+                        max_completion_tokens=700,
                     )
 
-                    answer = result.choices[0].message.content
+                    answer = (
+                        result.choices[0].message.content
+                    )
 
                     if not answer:
                         answer = (
@@ -534,6 +548,7 @@ Không tự bịa dữ kiện. Nếu chưa chắc chắn, hãy nói rõ.
 
                     st.markdown(answer)
 
+            # Lưu câu trả lời vào lịch sử trò chuyện
             st.session_state.tutor_messages.append(
                 {
                     "role": "assistant",
@@ -541,7 +556,7 @@ Không tự bịa dữ kiện. Nếu chưa chắc chắn, hãy nói rõ.
                 }
             )
 
-            # Cập nhật lịch sử học tập nếu app đã khởi tạo
+            # Cập nhật lịch sử học tập nếu đã khởi tạo
             if "history" in st.session_state:
                 st.session_state.history.append(
                     {
@@ -552,9 +567,14 @@ Không tự bịa dữ kiện. Nếu chưa chắc chắn, hãy nói rõ.
                 )
 
         except Exception as e:
-            st.error("Không thể kết nối với mô hình AI.")
+            st.error(
+                "Không thể kết nối với Groq AI. "
+                "Hãy kiểm tra API key, tên mô hình "
+                "và hạn mức sử dụng."
+            )
             st.write("Loại lỗi:", type(e).__name__)
             st.code(str(e)[:1500])
+
 # =====================================================
 # PAGE 3: QUIZ
 # =====================================================
