@@ -27,288 +27,227 @@ for key, value in defaults.items():
 st.markdown("""
 <style>
 
-/* 1. Bảng màu và nền ứng dụng */
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap');
+
 :root {
-    --eduai-primary: #6366f1;
-    --eduai-primary-dark: #4f46e5;
-    --eduai-primary-light: #eef2ff;
-    --eduai-accent: #8b5cf6;
-    --eduai-text: #172554;
-    --eduai-muted: #64748b;
-    --eduai-border: #e2e8f0;
-    --eduai-surface: #ffffff;
-    --eduai-background: #f7f8fc;
+    --blue: #2563EB;
+    --purple: #7C3AED;
+    --cyan: #06B6D4;
+    --ink: #172554;
+    --muted: #64748B;
+    --line: #E2E8F0;
+    --surface: #FFFFFF;
+}
+
+html, body, [class*="css"] {
+    font-family: 'Be Vietnam Pro', sans-serif;
 }
 
 .stApp {
     background:
-        radial-gradient(
-            ellipse at 85% 0%,
-            rgba(139, 92, 246, 0.10),
-            transparent 34%
-        ),
-        radial-gradient(
-            ellipse at 0% 20%,
-            rgba(99, 102, 241, 0.07),
-            transparent 30%
-        ),
-        var(--eduai-background);
-
-    color: var(--eduai-text);
+        radial-gradient(ellipse at 90% 0%, #EDE9FE 0%, transparent 28%),
+        radial-gradient(ellipse at 0% 15%, #DBEAFE 0%, transparent 25%),
+        #F8FAFF;
+    color: var(--ink);
 }
 
-/* 2. Khu vực nội dung chính */
-[data-testid="stMainBlockContainer"] {
+.block-container {
     max-width: 1240px;
     padding-top: 2rem;
     padding-bottom: 3rem;
 }
 
-/* 3. Thanh điều hướng bên trái */
-[data-testid="stSidebar"] {
-    background: linear-gradient(
-        180deg,
-        #eef2ff 0%,
-        #f8faff 55%,
-        #ffffff 100%
-    );
-
-    border-right: 1px solid #e0e7ff;
-}
-
-[data-testid="stSidebar"] > div {
-    padding-top: 1.5rem;
-}
-
-/* 4. Kiểu chữ */
-html,
-body,
-.stApp {
-    font-family: "Inter", "Segoe UI", sans-serif;
-}
-
-h1,
-h2,
-h3,
-h4 {
-    color: var(--eduai-text);
-    letter-spacing: -0.035em;
-}
-
-h1 {
+h1, h2, h3 {
+    color: var(--ink);
+    letter-spacing: -0.6px;
     font-weight: 800;
-    line-height: 1.2;
 }
 
-h2 {
-    font-weight: 750;
-    line-height: 1.3;
+p, label, .stMarkdown {
+    line-height: 1.7;
 }
 
-h3 {
+/* Sidebar */
+[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #EFF6FF, #F5F3FF);
+    border-right: 1px solid #DCE5FF;
+}
+
+[data-testid="stSidebar"] h1 {
+    color: #4338CA;
+    letter-spacing: -1px;
+}
+
+/* Main hero */
+.hero {
+    position: relative;
+    overflow: hidden;
+    padding: 34px;
+    border-radius: 26px;
+    color: white;
+    background: linear-gradient(120deg, #1D4ED8 0%, #4F46E5 55%, #7C3AED 100%);
+    box-shadow: 0 18px 45px rgba(79, 70, 229, .18);
+    margin-bottom: 26px;
+}
+
+.hero:after {
+    content: "✳";
+    position: absolute;
+    right: 34px;
+    top: -42px;
+    font-size: 180px;
+    color: rgba(255,255,255,.10);
+    pointer-events: none;
+}
+
+.hero h1 {
+    color: white;
+    font-size: clamp(1.9rem, 4vw, 2.8rem);
+    margin: 12px 0;
+}
+
+.hero p {
+    color: #E0E7FF;
+    max-width: 680px;
+    font-size: 1rem;
+}
+
+.eyebrow {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 99px;
+    border: 1px solid rgba(255,255,255,.30);
+    background: rgba(255,255,255,.12);
+    color: #F5F3FF;
+    font-size: .75rem;
     font-weight: 700;
+    letter-spacing: 1.1px;
 }
 
-/* 5. Các đoạn văn và chú thích */
-[data-testid="stMarkdownContainer"] p {
-    line-height: 1.75;
+/* Feature cards */
+.feature {
+    background: rgba(255,255,255,.92);
+    border: 1px solid #E2E8F0;
+    border-radius: 20px;
+    padding: 21px;
+    min-height: 185px;
+    box-shadow: 0 7px 22px rgba(30, 64, 175, .045);
+    transition: transform .2s ease, box-shadow .2s ease;
 }
 
-.stCaption,
-[data-testid="stCaptionContainer"] {
-    color: var(--eduai-muted);
+.feature:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(79,70,229,.10);
 }
 
-/* 6. Thanh điều hướng radio */
-[data-testid="stRadio"] > div {
-    gap: 0.35rem;
+.feature-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    background: #EEF2FF;
+    font-size: 24px;
+    margin-bottom: 12px;
 }
 
-[data-testid="stSidebar"] [data-testid="stRadio"] label {
-    padding: 0.45rem 0.65rem;
-    border-radius: 12px;
-    transition:
-        background 0.18s ease,
-        color 0.18s ease;
+.feature h3 {
+    font-size: 1.08rem;
+    margin: 0 0 6px 0;
 }
 
-[data-testid="stSidebar"] [data-testid="stRadio"] label:hover {
-    background: rgba(99, 102, 241, 0.09);
+.feature p {
+    color: var(--muted);
+    font-size: .9rem;
+    margin: 0;
 }
 
-/* 7. Nút bấm */
-.stButton > button {
-    min-height: 44px;
-    border: 1px solid #dce3f2;
-    border-radius: 12px;
-
-    background: #ffffff;
-    color: var(--eduai-text);
-
-    font-weight: 650;
-
-    transition:
-        transform 0.18s ease,
-        box-shadow 0.18s ease,
-        border-color 0.18s ease;
+.section-kicker {
+    color: #6366F1;
+    font-size: .76rem;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
 }
 
-.stButton > button:hover {
-    border-color: #a5b4fc;
-    color: var(--eduai-primary-dark);
-
-    box-shadow:
-        0 6px 18px rgba(79, 70, 229, 0.10);
-
-    transform: translateY(-1px);
-}
-
-.stButton > button:focus-visible {
-    outline: 3px solid rgba(99, 102, 241, 0.35);
-    outline-offset: 2px;
-}
-
-/* 8. Ô chọn và ô nhập dữ liệu */
-[data-baseweb="select"] > div {
-    border-radius: 12px;
-    border-color: #dce3f2;
-    background: #ffffff;
-}
-
-[data-baseweb="select"] > div:focus-within {
-    border-color: var(--eduai-primary);
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.12);
-}
-
-[data-testid="stTextInput"] input,
-[data-testid="stNumberInput"] input,
-[data-testid="stTextArea"] textarea {
-    border-radius: 12px;
-    border-color: #dce3f2;
-}
-
-/* 9. Các thẻ nội dung có viền */
-[data-testid="stVerticalBlockBorderWrapper"] {
-    border: 1px solid var(--eduai-border);
-    border-radius: 18px;
-    background: rgba(255, 255, 255, 0.86);
-
-    box-shadow:
-        0 5px 20px rgba(30, 41, 59, 0.035);
-}
-
-/* 10. Chỉ số thống kê */
+/* Metrics */
 [data-testid="stMetric"] {
-    padding: 18px 20px;
-
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-
-    background: rgba(255, 255, 255, 0.90);
-
-    box-shadow:
-        0 4px 16px rgba(30, 41, 59, 0.035);
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 17px 19px;
+    box-shadow: 0 6px 20px rgba(30,64,175,.04);
 }
 
 [data-testid="stMetricLabel"] {
-    color: var(--eduai-muted);
+    color: #64748B;
     font-weight: 600;
 }
 
 [data-testid="stMetricValue"] {
-    color: var(--eduai-primary-dark);
+    color: #3730A3;
     font-weight: 800;
 }
 
-/* 11. Khu vực chat */
-[data-testid="stChatMessage"] {
-    border: 1px solid #e7eaf4;
-    border-radius: 16px;
-    padding: 1rem;
-
-    background: rgba(255, 255, 255, 0.82);
+/* Buttons */
+.stButton > button,
+.stFormSubmitButton > button {
+    border-radius: 12px;
+    min-height: 43px;
+    font-weight: 700;
+    border: 1px solid #D8DEFF;
+    transition: all .2s ease;
 }
 
-[data-testid="stChatInput"] {
-    border-radius: 16px;
+.stButton > button[kind="primary"],
+.stFormSubmitButton > button[kind="primary"] {
+    color: white;
+    border: none;
+    background: linear-gradient(100deg, #2563EB, #7C3AED);
 }
 
-[data-testid="stChatInput"] textarea {
-    border-radius: 16px;
+.stButton > button:hover,
+.stFormSubmitButton > button:hover {
+    border-color: #818CF8;
 }
 
-/* 12. Hộp thông báo */
-[data-testid="stAlert"] {
-    border-radius: 14px;
-    border-width: 1px;
+/* Inputs */
+[data-testid="stTextArea"] textarea,
+[data-testid="stTextInput"] input {
+    border-radius: 12px;
+    background: #FFFFFF;
 }
 
-/* 13. Thanh tiến trình */
-[data-testid="stProgress"] > div > div {
-    border-radius: 999px;
+[data-testid="stSelectbox"] > div {
+    border-radius: 12px;
 }
 
-/* 14. Đường phân cách */
-hr {
-    border-color: #e2e8f0;
-    opacity: 0.9;
-}
-
-/* 15. Bảng dữ liệu */
-[data-testid="stDataFrame"],
-[data-testid="stTable"] {
-    border: 1px solid #e2e8f0;
-    border-radius: 14px;
-    overflow: hidden;
-}
-
-/* 16. Hình ảnh */
-[data-testid="stImage"] img {
+[data-testid="stExpander"] {
+    background: rgba(255,255,255,.75);
+    border: 1px solid #E2E8F0;
     border-radius: 14px;
 }
 
-/* 17. Hiệu ứng nhẹ, không thay đổi chức năng */
-@media (prefers-reduced-motion: no-preference) {
-    [data-testid="stVerticalBlockBorderWrapper"] {
-        transition:
-            box-shadow 0.2s ease,
-            border-color 0.2s ease;
-    }
-
-    [data-testid="stVerticalBlockBorderWrapper"]:hover {
-        border-color: #d5dcf0;
-
-        box-shadow:
-            0 10px 28px rgba(30, 41, 59, 0.055);
-    }
+/* Footer */
+.footer {
+    text-align: center;
+    color: #94A3B8;
+    font-size: .8rem;
+    padding-top: 14px;
 }
 
-/* 18. Tương thích màn hình nhỏ */
 @media (max-width: 768px) {
-    [data-testid="stMainBlockContainer"] {
-        padding: 1.1rem 1rem 2rem;
+    .block-container {
+        padding-top: 1rem;
     }
-
-    h1 {
-        font-size: 1.9rem;
+    .hero {
+        padding: 23px;
+        border-radius: 20px;
     }
-
-    h2 {
-        font-size: 1.45rem;
-    }
-
-    [data-testid="stMetric"] {
-        padding: 12px;
-    }
-}
-
-/* 19. Hỗ trợ người dùng hạn chế hiệu ứng chuyển động */
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
+    .hero:after {
+        right: 8px;
+        font-size: 100px;
     }
 }
 </style>
