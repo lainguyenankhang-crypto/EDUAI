@@ -26,10 +26,6 @@ for key, value in defaults.items():
 
 
 <style>
-/* ==================================================
-   EDUAI — MODERN AI LEARNING DESIGN SYSTEM
-   Chỉ chỉnh giao diện, không thay đổi logic Python
-   ================================================== */
 
 /* 1. Bảng màu và nền ứng dụng */
 :root {
