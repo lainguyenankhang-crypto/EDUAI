@@ -378,18 +378,18 @@ if page == PAGES[0]:
 st.markdown("## 📡 Learning analytics")
 m1, m2, m3 = st.columns(3)
 
-    m1.metric("Câu hỏi đã gửi", len(st.session_state.history))
-    m2.metric(
+m1.metric("Câu hỏi đã gửi", len(st.session_state.history))
+m2.metric(
         "Điểm gần nhất",
         f"{st.session_state.quiz_score}/3"
         if st.session_state.quiz_done else "—",
-    )
-    m3.metric("Trạng thái AI", "Bản minh họa")
+)
+m3.metric("Trạng thái AI", "Bản minh họa")
 
     st.info(
         "EDUAI hiện chưa kết nối mô hình AI thật. "
         "Các chỉ số chỉ phản ánh dữ liệu trong phiên hiện tại."
-    )
+)
 
     st.markdown("## 🧭 Lộ trình phát triển")
     with st.container(border=True):
