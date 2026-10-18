@@ -384,15 +384,16 @@ if page == PAGES[0]:
         st.markdown("**04 — Progress tracking**")
         st.caption("Thiết kế cơ chế lưu kết quả lâu dài.")
 # =====================================================
-# PAGE 2: TUTOR - FREE DEMO CHATBOT
+# PAGE 2: AI TUTOR - HUGGING FACE
 # =====================================================
 elif page == PAGES[1]:
-    import re
+    import streamlit as st
+    from huggingface_hub import InferenceClient
 
     st.markdown("# ✳ Gia sư học tập")
     st.write(
-        "Chatbot học tập miễn phí phiên bản thử nghiệm. "
-        "Hãy chọn môn học và nhập câu hỏi."
+        "Đặt câu hỏi để được AI hỗ trợ học tập "
+        "theo từng bước."
     )
 
     subject = st.selectbox(
@@ -423,23 +424,25 @@ elif page == PAGES[1]:
             {
                 "role": "assistant",
                 "content": (
-                    "Xin chào! Mình là gia sư demo của EDUAI. "
-                    "Bạn có thể hỏi về công thức, khái niệm "
-                    "hoặc kiến thức học tập phổ biến."
+                    "Xin chào! Mình là gia sư AI của EDUAI. "
+                    "Bạn đang cần hỗ trợ nội dung gì?"
                 ),
             }
         ]
 
+    # Nút xóa lịch sử chat trong phiên hiện tại
     if st.button("Xóa cuộc trò chuyện", key="clear_tutor"):
         st.session_state.tutor_messages = []
         st.rerun()
 
+    # Hiển thị các tin nhắn đã có
     for message in st.session_state.tutor_messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
+    # Khung nhập câu hỏi
     question = st.chat_input(
-        "Nhập câu hỏi học tập..."
+        "Nhập câu hỏi học tập của bạn..."
     )
 
     if question:
@@ -447,139 +450,95 @@ elif page == PAGES[1]:
             {"role": "user", "content": question}
         )
 
-        q = question.lower().strip()
-        answer = ""
+        with st.chat_message("user"):
+            st.markdown(question)
 
-        if subject == "Hóa học 12":
-            if any(
-                word in q
-                for word in ["glucose", "glucozơ", "fructose", "fructozơ"]
-            ):
-                answer = (
-                    "**Gợi ý Hóa học:** Glucose và fructose "
-                    "là các monosaccharide.\n\n"
-                    "Khi học phần này, hãy phân biệt cấu tạo "
-                    "mạch hở, mạch vòng và các phản ứng đặc trưng. "
-                    "Bạn hãy gửi phương trình hoặc bài tập cụ thể "
-                    "để mình hỗ trợ theo từng bước."
-                )
-            elif any(
-                word in q
-                for word in ["este", "ester"]
-            ):
-                answer = (
-                    "**Gợi ý:** Este thường có nhóm chức "
-                    "–COO– trong phân tử.\n\n"
-                    "Hãy xác định công thức cấu tạo, gọi tên "
-                    "và xem đề bài yêu cầu tính chất hay tính toán."
-                )
-            else:
-                answer = (
-                    "Mình chưa có câu trả lời được lập trình "
-                    "cho câu hỏi này. Bạn hãy nêu rõ khái niệm, "
-                    "phương trình hoặc dữ kiện bài tập nhé."
-                )
+        try:
+            token = st.secrets["HF_TOKEN"]
 
-        elif subject == "Toán học":
-            if any(
-                word in q
-                for word in ["đạo hàm", "dao ham"]
-            ):
-                answer = (
-                    "**Gợi ý:** Hãy xác định hàm số trước, "
-                    "sau đó chọn quy tắc đạo hàm phù hợp. "
-                    "Bạn gửi biểu thức cụ thể để được hướng dẫn."
-                )
-            elif any(
-                word in q
-                for word in ["xác suất", "xac suat"]
-            ):
-                answer = (
-                    "**Gợi ý:** Xác định không gian mẫu, "
-                    "biến cố và dữ kiện đề bài trước khi "
-                    "áp dụng công thức xác suất."
-                )
-            else:
-                answer = (
-                    "Bạn hãy gửi biểu thức hoặc đề toán cụ thể. "
-                    "Phiên bản demo chưa tự giải được mọi bài toán."
-                )
-
-        elif subject == "Sinh học":
-            if any(
-                word in q
-                for word in ["dna", "adn", "nhân đôi"]
-            ):
-                answer = (
-                    "**Gợi ý Sinh học:** Với bài tập nhân đôi DNA, "
-                    "hãy xác định số lần nhân đôi và số phân tử "
-                    "DNA ban đầu, rồi áp dụng quy luật nhân đôi."
-                )
-            else:
-                answer = (
-                    "Bạn hãy nêu tên bài hoặc khái niệm Sinh học "
-                    "cần học. Mình sẽ đưa gợi ý cơ bản nếu "
-                    "câu hỏi thuộc nội dung đã lập trình."
-                )
-
-        elif subject == "Ngữ văn":
-            if any(
-                word in q
-                for word in ["nghị luận", "nghi luan"]
-            ):
-                answer = (
-                    "**Gợi ý Ngữ văn:** Xác định luận điểm, "
-                    "lí lẽ, dẫn chứng và cách liên kết các ý. "
-                    "Sau đó kiểm tra xem mỗi dẫn chứng có "
-                    "thực sự làm rõ luận điểm hay không."
-                )
-            else:
-                answer = (
-                    "Bạn hãy cho biết tên tác phẩm hoặc yêu cầu "
-                    "cụ thể, chẳng hạn phân tích hình ảnh, "
-                    "nội dung hay nghệ thuật."
-                )
-
-        else:
-            if any(
-                word in q
-                for word in ["present perfect", "hiện tại hoàn thành"]
-            ):
-                answer = (
-                    "**English tip:** The present perfect uses "
-                    "**have/has + past participle**.\n\n"
-                    "Example: I have finished my homework."
-                )
-            else:
-                answer = (
-                    "Please tell me the English topic you are "
-                    "studying, such as grammar, vocabulary, "
-                    "or writing. This demo has limited answers."
-                )
-
-        if help_style == "Gợi ý trước":
-            answer = "💡 **Gợi ý trước**\n\n" + answer
-        elif help_style == "Ví dụ tương tự":
-            answer += (
-                "\n\n**Cách luyện tập:** Hãy thử một câu hỏi "
-                "tương tự với dữ kiện khác để kiểm tra "
-                "bạn đã hiểu kiến thức chưa."
+            client = InferenceClient(
+                provider="fireworks-ai",
+                api_key=token,
             )
 
-        st.session_state.tutor_messages.append(
-            {"role": "assistant", "content": answer}
-        )
-
-        if "history" in st.session_state:
-            st.session_state.history.append(
+            messages = [
                 {
-                    "subject": subject,
-                    "question": question,
-                    "answer": answer,
+                    "role": "system",
+                    "content": f"""
+Bạn là gia sư AI của website EDUAI.
+Hỗ trợ học sinh THPT bằng tiếng Việt rõ ràng,
+chính xác và có cấu trúc.
+
+Môn học: {subject}
+Cách hỗ trợ: {help_style}
+
+Nếu học sinh chọn "Gợi ý trước", hãy đưa gợi ý
+trước, không vội đưa toàn bộ lời giải.
+Nếu chọn "Giải thích từng bước", hãy giải thích
+lập luận, công thức và các bước thực hiện.
+Nếu chọn "Ví dụ tương tự", hãy giải thích kiến thức
+rồi đưa một ví dụ phù hợp.
+
+Không bịa dữ kiện hoặc khẳng định điều chưa chắc chắn.
+"""
+                }
+            ]
+
+            # Chỉ gửi một số tin nhắn gần nhất
+            messages.extend(
+                {
+                    "role": item["role"],
+                    "content": item["content"],
+                }
+                for item in st.session_state.tutor_messages[-10:]
+            )
+
+            with st.chat_message("assistant"):
+                with st.spinner("Gia sư AI đang trả lời..."):
+                    result = client.chat.completions.create(
+                        model="deepseek-ai/DeepSeek-V4.1-Flash",
+                        messages=messages,
+                        max_tokens=700,
+                        temperature=0.4,
+                    )
+
+                    answer = result.choices[0].message.content
+                    if not answer:
+                        answer = "AI chưa trả về nội dung. Bạn hãy thử lại."
+
+                    st.markdown(answer)
+
+            st.session_state.tutor_messages.append(
+                {
+                    "role": "assistant",
+                    "content": answer,
                 }
             )
 
-        st.rerun()
+            # Ghi vào lịch sử hiện có nếu ứng dụng đã khởi tạo
+            if "history" in st.session_state:
+                st.session_state.history.append(
+                    {
+                        "subject": subject,
+                        "question": question,
+                        "answer": answer,
+                    }
+                )
+
+        except Exception as e:
+            # Bỏ câu hỏi khỏi lịch sử nếu gọi API thất bại
+            if (
+                st.session_state.tutor_messages
+                and st.session_state.tutor_messages[-1]["role"] == "user"
+            ):
+                st.session_state.tutor_messages.pop()
+
+            st.error(
+                "Chưa kết nối được với mô hình AI. "
+                "Hãy kiểm tra HF_TOKEN, quyền truy cập, "
+                "tên mô hình và hạn mức sử dụng."
+            )
+            st.caption(f"Loại lỗi: {type(e).__name__}")
 
 # =====================================================
 # PAGE 3: QUIZ
