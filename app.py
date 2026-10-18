@@ -267,6 +267,7 @@ with st.sidebar:
     st.caption("LEARN BEYOND LIMITS")
     st.divider()
 
+
 page = st.radio(
     "Điều hướng",
     PAGES,
@@ -274,9 +275,6 @@ page = st.radio(
     label_visibility="collapsed",
 )
 
-if st.button("⌂ Về trang chủ", use_container_width=True):
-    st.session_state["eduai_navigation"] = PAGES[0]
-    st.rerun()
 # =====================================================
 # PAGE 1: DASHBOARD
 # =====================================================
