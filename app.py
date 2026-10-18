@@ -386,7 +386,7 @@ m2.metric(
 )
 m3.metric("Trạng thái AI", "Bản minh họa")
 
-    st.info(
+st.info(
         "EDUAI hiện chưa kết nối mô hình AI thật. "
         "Các chỉ số chỉ phản ánh dữ liệu trong phiên hiện tại."
 )
